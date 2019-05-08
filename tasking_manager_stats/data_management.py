@@ -4,6 +4,7 @@ import time
 import random
 from tqdm import tqdm
 import requests
+import pandas as pd
 
 
 def get_json_request_header():
@@ -64,7 +65,7 @@ def download_summary_data(project_id):
 
 def add_summary_data(project_data, summary_data):
     """
-    Add key/values of summary_data dictionnary to project_data dictionnary
+    Add key/values of summary_data dictionary to project_data dictionary
     :param project_data:
     :param summary_data:
     :return:
@@ -74,7 +75,7 @@ def add_summary_data(project_data, summary_data):
             project_data[key] = summary_data[key]
 
 
-def download_and_add_task_history_data(project_data):
+def download_and_add_task_history_data(project_data, project_id):
     """
     Download the history of each task and store it in project_data
     :param project_data: Dictionary in which will be store task list (key : task_ids) and history (key : task_history)
@@ -82,17 +83,18 @@ def download_and_add_task_history_data(project_data):
     """
     project_data['tasks_ids'] = extract_task_ids(project_data)
     task_history = dict()
-    missing_taks = list()
+    missing_tasks = list()
+    print('Download tasking manager data for project ' + str(project_id))
     for task_id in tqdm(project_data['tasks_ids']):
         url = 'https://tasks.hotosm.org/api/v1/project/' + str(project_id) + '/task/' + str(task_id)
         r = requests.get(url, headers=get_json_request_header())
-        if r.ok :
-            task_history[task_id] = r.json()
-        else :
-            missing_taks.append(task_id)
+        if r.ok:
+            task_history[str(task_id)] = r.json()
+        else:
+            missing_tasks.append(task_id)
         time.sleep(0.5 + random.random())
-    if len(missing_taks) > 0:
-        print(f'{len(missing_taks)} missing tasks')
+    if len(missing_tasks) > 0:
+        print(f'{len(missing_tasks)} missing tasks')
     project_data['task_history'] = task_history
 
 
@@ -117,11 +119,35 @@ class Database:
             self.project_data = download_project_data(project_id)
             summary_data = download_summary_data(project_id)
             add_summary_data(self.project_data, summary_data)
-            download_and_add_task_history_data(self.project_data)
+            download_and_add_task_history_data(self.project_data, project_id)
             store_project_data(self.project_data, data_file_path)
         else:
             with open(data_file_path) as f:
                 self.project_data = json.load(f)
+
+    def get_priority_area(self):
+        return self.project_data['priorityAreas']
+
+    def get_start_date(self):
+        return pd.to_datetime(self.project_data['created']).date()
+
+    def get_task_history(self):
+        return self.project_data['task_history']
+
+    def get_task_ids(self):
+        return self.project_data['tasks_ids']
+
+    def get_task_features(self):
+        return self.project_data['tasks']['features']
+
+    def get_project_name(self):
+        return self.project_data['name']
+
+    def get_project_center_coordinates(self):
+        return self.project_data['aoiCentroid']['coordinates']
+
+    def get_project_id(self):
+        return self.project_data['projectId']
 
 
 if __name__ == '__main__':
