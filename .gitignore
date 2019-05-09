@@ -1,3 +1,7 @@
 notebooks/.ipynb_checkpoints
 .idea/
 *.pyc
+*.exe
+*.spec
+build/
+dist/
