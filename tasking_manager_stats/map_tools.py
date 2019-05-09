@@ -195,7 +195,7 @@ def plot_and_save_credits(contributors, validators, project_data_dir):
     step_y = 0.025
     max_nb_y = round(max_y/step_y) + 1
     max_x = 0.95
-    step_x = max_x / (math.ceil(len(contributors) / max_nb_y) - 1)
+    step_x = max_x / max((math.ceil(len(contributors) / max_nb_y) - 1), 1)
 
     fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(10, 10), dpi=100, sharex=True)
     for i in range(len(contributors)):
