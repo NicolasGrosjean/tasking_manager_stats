@@ -15,7 +15,8 @@ Example of this image generation:
 
 #### Windows
 
-Coming soon
+- [Download the archive](https://drive.google.com/open?id=1EKbJn4NxjA8fYNR-NTT-KpiaSSJNiU0L)
+- Extract the archive
 
 #### Linux/Mac
 
@@ -25,7 +26,7 @@ Coming soon
 
 If you want contribute to the project or 
 
-Install conda
+[Install conda](https://docs.conda.io/en/latest/miniconda.html)
 
 Create a conda environment
 ````
