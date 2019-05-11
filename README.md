@@ -75,8 +75,7 @@ If there was no issue, you will have something like this.
 ![Map evolution result](Map_evolution_result.png)
 
 In the directory *data/<project_id>* you will find all the images.
-
-You can find a tutorial on [how using these images to do a video in the wiki](https://github.com/NicolasGrosjean/tasking_manager_stats/wiki/How-to-create-a-video-with-the-generated-images).
+You can find a tutorial on [how using these images to do a video with OpenShot Video Editor in the wiki](https://github.com/NicolasGrosjean/tasking_manager_stats/wiki/How-to-create-a-video-from-the-generated-images-with-OpenShot-Video-Editor).
 
 #### Linux/Mac
 
