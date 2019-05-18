@@ -1,6 +1,7 @@
 import os
 import json
 import time
+import datetime
 import random
 from tqdm import tqdm
 import requests
@@ -109,13 +110,36 @@ def store_project_data(project_data, json_file_path):
         json.dump(project_data, outfile)
 
 
+def need_to_download_data(data_file_path):
+    """
+    Return if the data need do be downloaded. The cases to decide to download are:
+    - The data has never been downloaded
+    - The data has been downloaded in the latest 24h
+    - The project has not been archived when the data has been downloaded the latest time
+    :param data_file_path:
+    :return:
+    """
+    if not os.path.exists(data_file_path):
+        print('Data file not found, it will be downloaded again.')
+        return True
+    if (datetime.datetime.now().timestamp() - os.path.getmtime(data_file_path)) < 24 * 3600:
+        print('Data downloaded in the latest 24h. It won\'t be downloaded again.')
+        return False
+    with open(data_file_path) as f:
+        project_data = json.load(f)
+    if project_data['status'] != 'ARCHIVED':
+        print('Data downloaded when the project hasn\'t been archived. It will be downloaded again.')
+        return True
+    return False
+
+
 class Database:
     """
     The Database class manage the loading of the data and if necessary the downloading and the storage
     """
     def __init__(self, project_id):
         data_file_path = os.path.join(get_data_dir(), str(project_id) + '.json')
-        if not os.path.exists(data_file_path):
+        if need_to_download_data(data_file_path):
             self.project_data = download_project_data(project_id)
             summary_data = download_summary_data(project_id)
             add_summary_data(self.project_data, summary_data)
