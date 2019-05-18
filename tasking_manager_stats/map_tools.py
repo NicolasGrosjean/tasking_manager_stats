@@ -169,6 +169,16 @@ def plot_and_save_project_maps(db, nb_days, start, tasks_states, locked_tasks, p
             ax.set_title(title, fontsize=16)
             ax.axis('off')
 
+            # Same scale in both axis
+            xlim = ax.get_xlim()
+            ylim = ax.get_ylim()
+            xscale = xlim[1] - xlim[0]
+            yscale = ylim[1] - ylim[0]
+            if xscale > yscale:
+                ax.set_ylim([ylim[0] - (xscale - yscale) / 2, ylim[1] + (xscale - yscale) / 2])
+            else:
+                ax.set_xlim([xlim[0] - (yscale - xscale) / 2, xlim[1] + (yscale - xscale) / 2])
+
             # Save plot
             str_day_file = (start + pd.Timedelta(days=day)).strftime('%Y-%m-%d')
             suffix = '_2' if not plot_lock else ''
