@@ -130,6 +130,7 @@ def need_to_download_data(data_file_path):
     if project_data['status'] != 'ARCHIVED':
         print('Data downloaded when the project hasn\'t been archived. It will be downloaded again.')
         return True
+    print('Data file found and the project is archived. It won\'t be downloaded again.')
     return False
 
 
