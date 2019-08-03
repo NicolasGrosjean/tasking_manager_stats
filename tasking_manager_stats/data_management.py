@@ -141,7 +141,8 @@ class Database:
     The Database class manage the loading of the data and if necessary the downloading and the storage
     """
     def __init__(self, project_id):
-        data_file_path = os.path.join(get_data_dir(), str(project_id) + '.json')
+        os.makedirs(os.path.join(get_data_dir(), 'json'), exist_ok=True)
+        data_file_path = os.path.join(get_data_dir(), 'json', str(project_id) + '.json')
         if need_to_download_data(data_file_path):
             self.project_data = download_project_data(project_id)
             summary_data = download_summary_data(project_id)
