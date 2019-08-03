@@ -16,6 +16,9 @@ def compute_task_data(database):
     project = database.get_project_id()
     raw_data = pd.DataFrame()
     for task_id in database.get_task_ids():
+        if str(task_id) not in database.get_task_history():
+            print(f'Task {task_id} missing')
+            continue
         task_data = database.get_task_history()[str(task_id)]
         for task_hist in task_data['taskHistory']:
             if task_hist['action'] == 'LOCKED_FOR_VALIDATION' or task_hist['action'] == 'LOCKED_FOR_MAPPING':

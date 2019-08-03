@@ -96,6 +96,7 @@ def download_and_add_task_history_data(project_data, project_id):
         time.sleep(0.5 + random.random())
     if len(missing_tasks) > 0:
         print(f'{len(missing_tasks)} missing tasks')
+        # TODO Try to download missing tasks
     project_data['task_history'] = task_history
 
 
@@ -129,6 +130,7 @@ def need_to_download_data(data_file_path):
         project_data = json.load(f)
     if project_data['status'] != 'ARCHIVED':
         print('Data downloaded when the project hasn\'t been archived. It will be downloaded again.')
+        # TODO : Ask user if he wants downloading data or not
         return True
     print('Data file found and the project is archived. It won\'t be downloaded again.')
     return False
