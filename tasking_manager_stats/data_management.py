@@ -143,7 +143,7 @@ class Database:
     def __init__(self, project_id, force_json_reading=False):
         os.makedirs(os.path.join(get_data_dir(), 'json'), exist_ok=True)
         data_file_path = os.path.join(get_data_dir(), 'json', str(project_id) + '.json')
-        if not force_json_reading or need_to_download_data(data_file_path):
+        if not force_json_reading and need_to_download_data(data_file_path):
             self.project_data = download_project_data(project_id)
             summary_data = download_summary_data(project_id)
             add_summary_data(self.project_data, summary_data)
