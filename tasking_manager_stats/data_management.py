@@ -111,13 +111,14 @@ def store_project_data(project_data, json_file_path):
         json.dump(project_data, outfile)
 
 
-def need_to_download_data(data_file_path):
+def need_to_download_data(data_file_path, project_id):
     """
     Return if the data need do be downloaded. The cases to decide to download are:
     - The data has never been downloaded
     - The data has been downloaded in the latest 24h
     - The project has not been archived when the data has been downloaded the latest time
     :param data_file_path:
+    :param project_id:
     :return:
     """
     if not os.path.exists(data_file_path):
@@ -128,11 +129,14 @@ def need_to_download_data(data_file_path):
         return False
     with open(data_file_path) as f:
         project_data = json.load(f)
-    if project_data['status'] != 'ARCHIVED':
-        print('Data downloaded when the project hasn\'t been archived. It will be downloaded again.')
-        # TODO : Ask user if he wants downloading data or not
+    summary_data = download_summary_data(project_id)
+    latest_update = pd.to_datetime(summary_data['lastUpdated'])
+    latest_downloaded_update = pd.to_datetime(project_data['lastUpdated'])
+    if latest_update > latest_downloaded_update:
+        print(f'The project has been updated ({latest_update}) since the latest change downloaded ({latest_downloaded_update}), '
+              f'it will be downloaded again.')
         return True
-    print('Data file found and the project is archived. It won\'t be downloaded again.')
+    print('Data file found and the project has not been changed. It won\'t be downloaded again.')
     return False
 
 
@@ -143,7 +147,7 @@ class Database:
     def __init__(self, project_id, force_json_reading=False):
         os.makedirs(os.path.join(get_data_dir(), 'json'), exist_ok=True)
         data_file_path = os.path.join(get_data_dir(), 'json', str(project_id) + '.json')
-        if not force_json_reading and need_to_download_data(data_file_path):
+        if not force_json_reading and need_to_download_data(data_file_path, project_id):
             self.project_data = download_project_data(project_id)
             summary_data = download_summary_data(project_id)
             add_summary_data(self.project_data, summary_data)
