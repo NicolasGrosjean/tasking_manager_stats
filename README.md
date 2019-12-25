@@ -89,6 +89,19 @@ Run the following command to know the parameters.
 python tasking_manager_stats/generate_map_evolution.py -h
 ````
 
+## Statistics
+
+### Export task data of a project
+```
+python tasking_manager_stats/export_tasks_to_csv.py -h
+```
+
+### Export user stats
+
+### Merge all data
+```
+python tasking_manager_stats/merge_stats.py -h
+```
 
 ## License
 
