@@ -2,6 +2,9 @@ import os
 import argparse
 from PIL import Image
 
+import sys
+sys.path.append(os.path.join(os.getcwd()))
+
 import tasking_manager_stats.data_management as dm
 import tasking_manager_stats.map_tools as map
 

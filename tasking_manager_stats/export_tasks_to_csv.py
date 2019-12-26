@@ -2,6 +2,9 @@ import argparse
 import os
 import pandas as pd
 
+import sys
+sys.path.append(os.path.join(os.getcwd()))
+
 import tasking_manager_stats.data_management as dm
 
 
