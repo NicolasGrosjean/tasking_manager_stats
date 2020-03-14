@@ -18,9 +18,13 @@ def compute_nb_days(db, start):
     """
     nb_days = 0
     for task_id in db.get_task_ids():
-        date = pd.to_datetime(db.get_task_history()[str(task_id)]['taskHistory'][0]['actionDate']).date()
-        day = (date - start).days
-        nb_days = max(nb_days, day)
+        task_history = db.get_task_history()[str(task_id)]['taskHistory']
+        if len(task_history) > 0:
+            date1 = pd.to_datetime(task_history[0]['actionDate']).date()
+            date2 = pd.to_datetime(task_history[-1]['actionDate']).date()
+            day1 = (date1 - start).days
+            day2 = (date2 - start).days
+            nb_days = max(nb_days, day1, day2)
     return nb_days
 
 
@@ -124,7 +128,7 @@ def plot_and_save_project_maps(db, nb_days, start, tasks_states, locked_tasks, p
     :param project_data_dir: Directory of the project in which images will be saved
     :param cartong_logo: Image of the CartONG logo displayed in top and left of each image
     :param legend: Image of the legend displayed in bottom and left of each image
-    :param events: Dataframe of the events to add in the title
+    :param events: Dataframe of the events to add in the title OR None
     :return:
     """
     print('Plot and save project maps')
