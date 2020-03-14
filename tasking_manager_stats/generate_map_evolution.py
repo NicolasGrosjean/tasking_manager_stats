@@ -32,7 +32,10 @@ if __name__ == '__main__':
 
     nb_days = map.compute_nb_days(db, start)
     tasks_states, locked_tasks = map.get_task_states_and_locked_tasks(db, start, nb_days)
-    events = map.read_and_format_events(start, event_file)
+    if event_file is None:
+        events = None
+    else:
+        events = map.read_and_format_events(start, event_file)
     map.plot_and_save_project_maps(db, nb_days, start, tasks_states, locked_tasks, project_data_dir, cartong_logo,
                                    legend, events)
 
