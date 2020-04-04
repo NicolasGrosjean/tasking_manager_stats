@@ -10,3 +10,9 @@ if __name__ == '__main__':
         df = pd.read_csv(os.path.join(stats_dir, file), encoding='ISO-8859-1')
         stats = pd.concat([stats, df], axis=0)
     stats.to_csv(os.path.join(dm.get_data_dir(), 'merged_stats.csv'), index=None)
+    stats_agg1 = stats.groupby(['Author', 'Type']).sum()['Duration']
+    stats_agg2 = stats.groupby(['Author', 'Type']).count()['Task']
+    stats_agg = pd.DataFrame(stats_agg1).join(stats_agg2)
+    stats_agg.columns= ['Duration_s', 'Nb_Tasks']
+    stats_agg['Duration_h'] = stats_agg['Duration_s'] / 3600
+    stats_agg.reset_index().to_csv(os.path.join(dm.get_data_dir(), 'merged_stats_agg.csv'), index=None)
