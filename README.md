@@ -79,7 +79,7 @@ You can find a tutorial on [how using these images to do a video with OpenShot V
 
 #### Linux/Mac
 
-Coming soon
+Will be done if asked
 
 #### Contributor
 
@@ -96,11 +96,29 @@ python tasking_manager_stats/generate_map_evolution.py -h
 python tasking_manager_stats/export_tasks_to_csv.py -h
 ```
 
-### Export user stats
-
 ### Merge all data
 ```
 python tasking_manager_stats/merge_stats.py -h
+```
+
+### Export user stats on merge data
+```
+python tasking_manager_stats/get_user_stats.py -h
+```
+
+### Get final date of Tasking Manager project
+```
+python tasking_manager_stats/get_final_date.py -h
+```
+
+### COmpute some stats about Tasking Manager project
+```
+python tasking_manager_stats/project_stats.py -h
+```
+
+### Compute contribution stats with ohsome
+```
+python stats_ohsome.py -h
 ```
 
 ## License
