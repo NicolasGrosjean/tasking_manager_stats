@@ -158,6 +158,9 @@ class Database:
     def get_priority_area(self):
         return self.project_data['priorityAreas']
 
+    def get_perimeter_poly(self):
+        return self.project_data['areaOfInterest']
+
     def get_start_date(self):
         return pd.to_datetime(self.project_data['created']).date()
 
@@ -178,6 +181,27 @@ class Database:
 
     def get_project_id(self):
         return self.project_data['projectId']
+
+    def get_creation_date(self, date_format='%Y-%m-%d'):
+        try:
+            creation_datetime = datetime.datetime.strptime(self.project_data['created'], '%Y-%m-%dT%H:%M:%S.%f')
+        except ValueError:
+            creation_datetime = datetime.datetime.strptime(self.project_data['created'], '%Y-%m-%dT%H:%M:%S.%fZ')
+        return creation_datetime.strftime(date_format)
+
+    def compute_final_validation_date(self, date_format='%Y-%m-%d'):
+        final_date = pd.to_datetime('1970-01-01').date()
+        for task_id in self.get_task_ids():
+            if str(task_id) not in self.get_task_history():
+                print(f'Task {task_id} missing')
+                continue
+            task_data = self.get_task_history()[str(task_id)]
+            for task_hist in task_data['taskHistory']:
+                if task_hist['actionText'] == 'VALIDATED' and task_hist['action'] == 'STATE_CHANGE':
+                    date = pd.to_datetime(task_hist['actionDate']).date()
+                    if date > final_date:
+                        final_date = date
+        return final_date.strftime(date_format)
 
 
 if __name__ == '__main__':
