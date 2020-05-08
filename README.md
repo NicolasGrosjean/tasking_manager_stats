@@ -101,7 +101,7 @@ python tasking_manager_stats/export_tasks_to_csv.py -h
 python tasking_manager_stats/merge_stats.py -h
 ```
 
-### Export user stats on merge data
+### [OUTDATED] Export user stats on merge data
 ```
 python tasking_manager_stats/get_user_stats.py -h
 ```
@@ -111,7 +111,7 @@ python tasking_manager_stats/get_user_stats.py -h
 python tasking_manager_stats/get_final_date.py -h
 ```
 
-### COmpute some stats about Tasking Manager project
+### Compute some stats about Tasking Manager project
 ```
 python tasking_manager_stats/project_stats.py -h
 ```

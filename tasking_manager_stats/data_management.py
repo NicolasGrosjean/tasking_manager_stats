@@ -34,9 +34,8 @@ def download_project_data(project_id):
     :param project_id:
     :return:
     """
-    url = 'https://tasks.hotosm.org/api/v1/project/' + str(project_id)
+    url = 'https://tasking-manager-tm4-production-api.hotosm.org/api/v2/projects/' + str(project_id)
     r = requests.get(url, headers=get_json_request_header())
-    # TODO Manage error cases ?
     return r.json()
 
 
@@ -58,9 +57,8 @@ def download_summary_data(project_id):
     :param project_id:
     :return:
     """
-    url = 'https://tasks.hotosm.org/api/v1/project/' + str(project_id) + '/summary'
+    url = 'https://tasking-manager-tm4-production-api.hotosm.org/api/v2/projects/' + str(project_id) + '/queries/summary'
     r = requests.get(url, headers=get_json_request_header())
-    # TODO Manage error cases ?
     return r.json()
 
 
@@ -87,7 +85,7 @@ def download_and_add_task_history_data(project_data, project_id):
     missing_tasks = list()
     print('Download tasking manager data for project ' + str(project_id))
     for task_id in tqdm(project_data['tasks_ids']):
-        url = 'https://tasks.hotosm.org/api/v1/project/' + str(project_id) + '/task/' + str(task_id)
+        url = 'https://tasking-manager-tm4-production-api.hotosm.org/api/v2/projects/' + str(project_id) + '/tasks/' + str(task_id)
         r = requests.get(url, headers=get_json_request_header())
         if r.ok:
             task_history[str(task_id)] = r.json()
