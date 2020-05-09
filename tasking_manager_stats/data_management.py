@@ -120,9 +120,16 @@ def need_to_download_data(data_file_path, project_id):
     :return:
     """
     if not os.path.exists(data_file_path):
-        print('Data file not found, it will be downloaded again.')
-        return True
-    if (datetime.datetime.now().timestamp() - os.path.getmtime(data_file_path)) < 24 * 3600:
+        try:
+            r = requests.get('https://raw.githubusercontent.com/NicolasGrosjean/tasking_manager_stats/master/data/json/' +
+                             str(project_id) + '.json')
+            with open(data_file_path, 'w') as outfile:
+                json.dump(r.json(), outfile)
+            print('Data file not found locally but found on GitHub, it has been downloaded from GitHub.')
+        except Exception:
+            print('Data file not found locally and on GitHub, it will be downloaded again.')
+            return True
+    elif (datetime.datetime.now().timestamp() - os.path.getmtime(data_file_path)) < 24 * 3600:
         print('Data downloaded in the latest 24h. It won\'t be downloaded again.')
         return False
     with open(data_file_path) as f:
@@ -132,7 +139,7 @@ def need_to_download_data(data_file_path, project_id):
     latest_downloaded_update = pd.to_datetime(project_data['lastUpdated'])
     if latest_update > latest_downloaded_update:
         print(f'The project has been updated ({latest_update}) since the latest change downloaded ({latest_downloaded_update}), '
-              f'it will be downloaded again.')
+              f'it will be downloaded again from the HOT Tasking Manager.')
         return True
     print('Data file found and the project has not been changed. It won\'t be downloaded again.')
     return False
