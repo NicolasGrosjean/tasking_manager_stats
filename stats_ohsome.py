@@ -74,9 +74,9 @@ if __name__ == '__main__':
         print(f'ohsome data end {ohsome_max_date} whereas the latest project update was {end_date}')
         exit(-1)
     data = download_ohsome_data(area, start_date, end_date, 'building', tag_type=None)
-    print('Downloading done.')
+    print('Downloading building done.')
 
-    print('Process data')
+    print('Process building data')
     df = pd.DataFrame()
     for feature in tqdm(data['features']):
         df = pd.concat([df, pd.DataFrame(data=[(feature['properties']['@osmId'],
@@ -103,3 +103,11 @@ if __name__ == '__main__':
 
     print('\nTotal current :')
     print((df2['validTo'] == end_date + ' 00:00:00').sum())
+
+    print('Download highway stats')
+    url = 'https://api.ohsome.org/v0.9/elements/length?' + area +\
+          '&keys=highway&format=json&showMetadata=false&types=way&time=' + start_date +'%2F' + end_date+'%2FP1D'
+    r = requests.get(url, headers=get_json_request_header())
+    data = r.json()
+    print('\nDelta highway (km):')
+    print(round((data['result'][-1]['value'] - data['result'][0]['value'])/1000))
