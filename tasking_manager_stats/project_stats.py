@@ -14,9 +14,7 @@ def get_args():
     return parser.parse_args()
 
 
-if __name__ == '__main__':
-    args = get_args()
-    project_id = args.project_id
+def print_project_stats(project_id):
     stats_dir = os.path.join(dm.get_data_dir(), 'stats')
     os.makedirs(stats_dir, exist_ok=True)
     csv_file = os.path.join(stats_dir, str(project_id) + '.csv')
@@ -27,3 +25,8 @@ if __name__ == '__main__':
     print(f'Mapping time : {mapping_time/3600:.1f}h')
     print(f'Validation time : {validation_time/3600:.1f}h')
     print(f'Contributor number : {contributor_nb}')
+
+
+if __name__ == '__main__':
+    args = get_args()
+    print_project_stats(args.project_id)

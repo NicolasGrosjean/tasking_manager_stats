@@ -158,9 +158,11 @@ class Database:
             add_summary_data(self.project_data, summary_data)
             download_and_add_task_history_data(self.project_data, project_id)
             store_project_data(self.project_data, data_file_path)
+            self.updated = True
         else:
             with open(data_file_path) as f:
                 self.project_data = json.load(f)
+            self.updated = False
 
     def get_priority_area(self):
         return self.project_data['priorityAreas']
@@ -188,6 +190,9 @@ class Database:
 
     def get_project_id(self):
         return self.project_data['projectId']
+
+    def has_been_updated(self):
+        return self.updated
 
     def get_creation_date(self, date_format='%Y-%m-%d'):
         try:

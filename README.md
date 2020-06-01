@@ -120,6 +120,12 @@ python tasking_manager_stats/project_stats.py -h
 ```
 python stats_ohsome.py -h
 ```
+```
+
+### Compute stats to update
+```
+python update_stats.py -h
+```
 
 ## License
 

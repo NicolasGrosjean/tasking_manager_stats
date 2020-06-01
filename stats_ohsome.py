@@ -56,11 +56,8 @@ def download_ohsome_data(area, start_time, end_time, tag, tag_type=None):
     return r.json()
 
 
-if __name__ == '__main__':
-    args = get_args()
-    project_id = args.project_id
+def print_ohsome_stats(project_id):
     db = dm.Database(project_id)
-
     polygons = ''
     for polygon in db.get_perimeter_poly()['coordinates']:
         if polygons != '':
@@ -82,7 +79,7 @@ if __name__ == '__main__':
         df = pd.concat([df, pd.DataFrame(data=[(feature['properties']['@osmId'],
                                                 feature['properties']['@validFrom'],
                                                 feature['properties']['@validTo'])],
-                                         columns=['osmId', 'validFrom', 'validTo'])],axis=0, ignore_index=True)
+                                         columns=['osmId', 'validFrom', 'validTo'])], axis=0, ignore_index=True)
     df['validFrom'] = pd.to_datetime(df['validFrom'])
     df['validTo'] = pd.to_datetime(df['validTo'])
 
@@ -105,9 +102,14 @@ if __name__ == '__main__':
     print((df2['validTo'] == end_date + ' 00:00:00').sum())
 
     print('Download highway stats')
-    url = 'https://api.ohsome.org/v0.9/elements/length?' + area +\
-          '&keys=highway&format=json&showMetadata=false&types=way&time=' + start_date +'%2F' + end_date+'%2FP1D'
+    url = 'https://api.ohsome.org/v0.9/elements/length?' + area + \
+          '&keys=highway&format=json&showMetadata=false&types=way&time=' + start_date + '%2F' + end_date + '%2FP1D'
     r = requests.get(url, headers=get_json_request_header())
     data = r.json()
     print('\nDelta highway (km):')
-    print(round((data['result'][-1]['value'] - data['result'][0]['value'])/1000))
+    print(round((data['result'][-1]['value'] - data['result'][0]['value']) / 1000))
+
+
+if __name__ == '__main__':
+    args = get_args()
+    print_ohsome_stats(args.project_id)
