@@ -4,6 +4,8 @@ import random
 import sys
 import time
 
+from tasking_manager_stats.export_tasks_to_csv import export_tasks_to_csv
+
 sys.path.append(os.path.join(os.getcwd()))
 
 import tasking_manager_stats.data_management as dm
@@ -27,8 +29,9 @@ if __name__ == '__main__':
         print(f'PROJECT {project_id} :')
         db = dm.Database(project_id)
         if db.updated:
+            export_tasks_to_csv(project_id)
             print_project_stats(project_id)
             print_ohsome_stats(project_id)
+            time.sleep(30 + 30 * random.random())
         else:
             print('already up to date')
-        time.sleep(30 + 30 * random.random())

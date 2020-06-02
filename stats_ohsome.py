@@ -72,7 +72,7 @@ def print_ohsome_stats(project_id):
     ohsome_max_date = get_last_available_ohsome_date()
     if datetime.datetime.strptime(ohsome_max_date, '%Y-%m-%d') < datetime.datetime.strptime(end_date, '%Y-%m-%d'):
         print(f'ohsome data end {ohsome_max_date} whereas the latest project update was {end_date}')
-        exit(-1)
+        return
     data = download_ohsome_data(area, start_date, end_date, 'building', tag_type=None)
     print('Downloading building done.')
 

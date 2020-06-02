@@ -49,14 +49,16 @@ def compute_task_data(database):
     return raw_data
 
 
-if __name__ == '__main__':
-    args = get_args()
-    project_id = args.project_id
+def export_tasks_to_csv(project_id):
     db = dm.Database(project_id)
-
     stats_dir = os.path.join(dm.get_data_dir(), 'stats')
     os.makedirs(stats_dir, exist_ok=True)
     csv_file = os.path.join(stats_dir, str(project_id) + '.csv')
     tasks_data = compute_task_data(db)
     tasks_data.to_csv(csv_file, index=None)
     print(f'Stats exported in {csv_file}')
+
+
+if __name__ == '__main__':
+    args = get_args()
+    export_tasks_to_csv(args.project_id)
