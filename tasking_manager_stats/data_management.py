@@ -194,6 +194,13 @@ class Database:
     def has_been_updated(self):
         return self.updated
 
+    def get_latest_update_date(self, date_format='%Y-%m-%d'):
+        try:
+            latest_update_datetime = datetime.datetime.strptime(self.project_data['lastUpdated'], '%Y-%m-%dT%H:%M:%S.%f')
+        except ValueError:
+            latest_update_datetime = datetime.datetime.strptime(self.project_data['lastUpdated'], '%Y-%m-%dT%H:%M:%S.%fZ')
+        return latest_update_datetime.strftime(date_format)
+
     def get_creation_date(self, date_format='%Y-%m-%d'):
         try:
             creation_datetime = datetime.datetime.strptime(self.project_data['created'], '%Y-%m-%dT%H:%M:%S.%f')

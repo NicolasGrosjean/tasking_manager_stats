@@ -66,6 +66,9 @@ def print_ohsome_stats(project_id):
     area = 'bpolys=' + polygons
     start_date = db.get_creation_date()
     end_date = db.compute_final_validation_date()
+    if end_date == '1970-01-01':
+        print('WARNING : No validation found !')
+        end_date = db.get_latest_update_date()
     ohsome_max_date = get_last_available_ohsome_date()
     if datetime.datetime.strptime(ohsome_max_date, '%Y-%m-%d') < datetime.datetime.strptime(end_date, '%Y-%m-%d'):
         print(f'ohsome data end {ohsome_max_date} whereas the latest project update was {end_date}')
