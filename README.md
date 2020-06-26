@@ -101,7 +101,7 @@ python tasking_manager_stats/export_tasks_to_csv.py -h
 python tasking_manager_stats/merge_stats.py -h
 ```
 
-### [OUTDATED] Export user stats on merge data
+### Export user stats on merge data
 ```
 python tasking_manager_stats/get_user_stats.py -h
 ```
@@ -119,7 +119,6 @@ python tasking_manager_stats/project_stats.py -h
 ### Compute contribution stats with ohsome
 ```
 python stats_ohsome.py -h
-```
 ```
 
 ### Compute stats to update
