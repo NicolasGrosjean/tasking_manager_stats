@@ -54,4 +54,13 @@ if __name__ == '__main__':
     stats = pd.read_csv(args.stats, encoding='ISO-8859-1')
     user_stats, contributions_by_day = get_user_stats(stats['Author'].unique(), args.token)
     user_stats.to_csv(os.path.join(dm.get_data_dir(), 'user_stats.csv'))
+    stats['date'] = stats['Year'].astype(str) + '-' + stats['Month'].astype(str) + '-' + stats['Day'].astype(str)
+    stats = stats[['date', 'Author', 'Task', 'Project']].drop_duplicates()
+    stats[(stats['date'] == '2020-3-28') & (stats['Author'] == 'Anaximandre')]
+    contributions_by_day_cartong = stats.groupby(['date', 'Author']).count().Task.reset_index()
+    contributions_by_day_cartong.columns = ['date', 'Contributor', 'CartONG_count']
+    contributions_by_day_cartong['date'] = pd.to_datetime(contributions_by_day_cartong['date'])
+    contributions_by_day['date'] = pd.to_datetime(contributions_by_day['date'])
+    contributions_by_day = pd.merge(contributions_by_day, contributions_by_day_cartong, on=['Contributor', 'date'],
+                                    how='left')
     contributions_by_day.to_csv(os.path.join(dm.get_data_dir(), 'contributions_day.csv'), index=None)
