@@ -35,7 +35,11 @@ def compute_task_data(database):
                 second = datetime.second
 
                 date_duration = pd.to_datetime(task_hist['actionText'])
-                duration = date_duration.second + 60 * date_duration.minute + 3600 * date_duration.hour
+                if date_duration is None:
+                    duration = 0
+                    print('ERROR with duration for action done by ' + task_hist['actionBy'] + ' at ' + task_hist['actionDate'])
+                else:
+                    duration = date_duration.second + 60 * date_duration.minute + 3600 * date_duration.hour
 
                 author = task_hist['actionBy']
 
