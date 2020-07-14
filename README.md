@@ -92,39 +92,90 @@ python tasking_manager_stats/generate_map_evolution.py -h
 ## Statistics
 
 ### Export task data of a project
+Export task data in a CSV file (in data/stats/) for a HOT tasking manager project.
 ```
-python tasking_manager_stats/export_tasks_to_csv.py -h
+python tasking_manager_stats/export_tasks_to_csv.py <project_id>
+```
+
+Example:
+```
+python tasking_manager_stats/export_tasks_to_csv.py 5654
 ```
 
 ### Merge all data
+Merge all the task data located in data/stats/ directory.
 ```
-python tasking_manager_stats/merge_stats.py -h
+python tasking_manager_stats/merge_stats.py
+```
+
+### Filter merged data between two dates
+Filter the merge data between two included dates.
+```
+python tasking_manager_stats/filter_merge_stats.py <min_date> <max_date>
+```
+
+Example:
+```
+python tasking_manager_stats/filter_merge_stats.py 01-07-2018 30-06-2019
 ```
 
 ### Export user stats on merge data
+Get users data from the HOT tasking manager API.
 ```
-python tasking_manager_stats/get_user_stats.py -h
+python tasking_manager_stats/get_user_stats.py <stats> <token>
 ```
 
-### Get final date of Tasking Manager project
+Example:
 ```
-python tasking_manager_stats/get_final_date.py -h
+python tasking_manager_stats/get_user_stats.py ../data/merged_stats.csv <token>
+```
+
+*token* must be replaced by the API key of HOT tasking manager API
+which can be get in [the settings](https://tasks.hotosm.org/settings).
+
+### Get final date of Tasking Manager project
+Get the date of the latest validation of a HOT tasking manager project.
+```
+python tasking_manager_stats/get_final_date.py <project_id>
+```
+
+Example:
+```
+python tasking_manager_stats/get_final_date.py 5654
 ```
 
 ### Compute some stats about Tasking Manager project
+Print some stats about a HOT tasking manager project.
 ```
-python tasking_manager_stats/project_stats.py -h
+python tasking_manager_stats/project_stats.py <project_id>
+```
+
+Example:
+```
+python tasking_manager_stats/project_stats.py 5654
 ```
 
 ### Compute contribution stats with ohsome
+Print some ohsome stats about a HOT tasking manager project.
 ```
-python stats_ohsome.py -h
+python stats_ohsome.py <project_id>
+```
+
+Example:
+```
+python stats_ohsome.py 5654
 ```
 
 ### Compute stats to update
+Print some stats about updated HOT tasking manager projects.
 ```
-python update_stats.py -h
+python update_stats.py <input_file>
 ```
+
+*input_file* contains the list of project ids with one id by line.
+
+It is better to put all the project ids because if the project has not been updated,
+there is no computation and the script look at the next project.
 
 ## License
 

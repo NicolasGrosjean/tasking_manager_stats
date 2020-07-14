@@ -8,7 +8,7 @@ import tasking_manager_stats.data_management as dm
 
 
 def get_args():
-    parser = argparse.ArgumentParser(description='Generate a CSV file with task data')
+    parser = argparse.ArgumentParser(description='Get the date of the latest validation of a project')
     parser.add_argument('project_id', type=int, help='Id of the HOT tasking manager project')
     return parser.parse_args()
 
