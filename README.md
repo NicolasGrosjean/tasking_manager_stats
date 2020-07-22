@@ -133,6 +133,17 @@ python tasking_manager_stats/get_user_stats.py ../data/merged_stats.csv <token>
 *token* must be replaced by the API key of HOT tasking manager API
 which can be get in [the settings](https://tasks.hotosm.org/settings).
 
+### Aggregate user stats on merge data
+Aggregate users data from the merge data.
+```
+python tasking_manager_stats/agregate_user_stats.py <merged_stats> <stats_one_author>
+```
+
+Example:
+```
+python tasking_manager_stats/get_user_stats.py ../data/merged_stats.csv ../data/merged_stats_one_atuhor_by_task_type.csv
+```
+
 ### Get final date of Tasking Manager project
 Get the date of the latest validation of a HOT tasking manager project.
 ```
