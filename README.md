@@ -136,12 +136,17 @@ which can be get in [the settings](https://tasks.hotosm.org/settings).
 ### Aggregate user stats on merge data
 Aggregate users data from the merge data.
 ```
-python tasking_manager_stats/agregate_user_stats.py <merged_stats> <stats_one_author>
+python tasking_manager_stats/agregate_user_stats.py <merged_stats> <stats_one_author> <mapathon_file> -max_date <YYYY_MM_DD>
 ```
 
-Example:
+Example to get latest data :
 ```
-python tasking_manager_stats/get_user_stats.py ../data/merged_stats.csv ../data/merged_stats_one_atuhor_by_task_type.csv
+python tasking_manager_stats/get_user_stats.py ../data/merged_stats.csv ../data/merged_stats_one_atuhor_by_task_type.csv ../data/mapathons.csv
+```
+
+Example to create a dataset to predict contributors who come back in 2020 :
+```
+python tasking_manager_stats/get_user_stats.py ../data/merged_stats.csv ../data/merged_stats_one_atuhor_by_task_type.csv ../data/mapathons.csv -max_date 2019_12_31
 ```
 
 ### Get final date of Tasking Manager project
