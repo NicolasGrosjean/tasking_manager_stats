@@ -43,7 +43,7 @@ def compute_mapathon_number(mapathon_file, stats_file, max_date=None):
                                    ignore_index=True)
 
     # Compute number of mapathons by contributor
-    df = pd.read_csv(stats_file)
+    df = pd.read_csv(stats_file, encoding='ISO-8859-1')
     df['date'] = df['Year'].astype(str) + '-' + df['Month'].astype(str) + '-' + df['Day'].astype(str)
     df['date'] = pd.to_datetime(df['date'], yearfirst=True)
     if max_date is not None:
@@ -57,7 +57,7 @@ def compute_mapathon_number(mapathon_file, stats_file, max_date=None):
 
 
 def compute_validation_time_by_task(stats_dir, csv_file, max_date=None):
-    df_project = pd.read_csv(os.path.join(stats_dir, csv_file))
+    df_project = pd.read_csv(os.path.join(stats_dir, csv_file), encoding='ISO-8859-1')
     df_project = df_project[df_project['Type'] == 'VALIDATION']
     if len(df_project) == 0:
         return pd.DataFrame()
@@ -112,12 +112,12 @@ def aggregate_merged_stats(merged_stats, max_date=None):
         merged_stats = merged_stats[merged_stats['date'] <= max_date]
     df = merged_stats[['date', 'Author']].drop_duplicates()
     df = df.groupby('Author').count().date.reset_index()
-    df.columns = ['Author', 'ContributionDayNb']
+    df.columns = ['Author', 'ContribDayNb']
     df2 = merged_stats.groupby('Author').min().date.reset_index()
-    df2.columns = ['Author', 'FirstContribution']
+    df2.columns = ['Author', 'FirstContrib']
     df = pd.merge(df, df2, on='Author')
     df3 = merged_stats.groupby('Author').max().date.reset_index()
-    df3.columns = ['Author', 'LatestContribution']
+    df3.columns = ['Author', 'LatestContrib']
     df = pd.merge(df, df3, on='Author')
     df4 = merged_stats[['Project', 'Author']].drop_duplicates()
     df4 = df4.groupby('Author').count().Project.reset_index()
@@ -138,7 +138,7 @@ def aggregate_merged_stats_one_author_by_task_type(merged_stats_one_author_by_ta
     df2 = merged_stats_one_author_by_task_type[merged_stats_one_author_by_task_type['Type'] == 'VALIDATION']
     df2 = df2.groupby('Author').count().Type.reset_index()
     df2.columns = ['Author', 'ValidationTaskNb']
-    df = pd.merge(df, df2, on='Author')
+    df = pd.merge(df, df2, on='Author', how='left')
     return df
 
 
@@ -165,3 +165,4 @@ if __name__ == '__main__':
         user_stats = pd.merge(user_stats, come_back_df, on='Author', how='left')
         filename = 'agregated_user_stats_' + args.max_date + '.csv'
     user_stats.to_csv(os.path.join(dm.get_data_dir(), filename), index=None)
+    print(os.path.join(dm.get_data_dir(), filename) + ' successfully created')
