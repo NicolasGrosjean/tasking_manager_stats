@@ -1,5 +1,6 @@
 import argparse
 import datetime
+import json
 import pandas as pd
 import requests
 from tqdm import tqdm
@@ -14,6 +15,8 @@ import tasking_manager_stats.data_management as dm
 def get_args():
     parser = argparse.ArgumentParser(description='Compute stats with ohsome')
     parser.add_argument('project_id', type=int, help='Id of the HOT tasking manager project')
+    parser.add_argument('-project_list', type=str,
+                        help='File containing a list of project id to compute building stats on all of them')
     return parser.parse_args()
 
 
@@ -56,7 +59,15 @@ def download_ohsome_data(area, start_time, end_time, tag, tag_type=None):
     return r.json()
 
 
-def print_ohsome_stats(project_id):
+def download_project_ohsome_data(area, start_date, end_date):
+    ohsome_max_date = get_last_available_ohsome_date()
+    if datetime.datetime.strptime(ohsome_max_date, '%Y-%m-%d') < datetime.datetime.strptime(end_date, '%Y-%m-%d'):
+        print(f'ohsome data end {ohsome_max_date} whereas the latest project update was {end_date}')
+        return
+    return download_ohsome_data(area, start_date, end_date, 'building', tag_type=None)
+
+
+def get_project_param(project_id):
     db = dm.Database(project_id)
     polygons = ''
     for polygon in db.get_perimeter_poly()['coordinates']:
@@ -69,14 +80,10 @@ def print_ohsome_stats(project_id):
     if end_date == '1970-01-01':
         print('WARNING : No validation found !')
         end_date = db.get_latest_update_date()
-    ohsome_max_date = get_last_available_ohsome_date()
-    if datetime.datetime.strptime(ohsome_max_date, '%Y-%m-%d') < datetime.datetime.strptime(end_date, '%Y-%m-%d'):
-        print(f'ohsome data end {ohsome_max_date} whereas the latest project update was {end_date}')
-        return
-    data = download_ohsome_data(area, start_date, end_date, 'building', tag_type=None)
-    print('Downloading building done.')
+    return area, start_date, end_date
 
-    print('Process building data')
+
+def ohsome_to_df(data):
     df = pd.DataFrame()
     for feature in tqdm(data['features']):
         df = pd.concat([df, pd.DataFrame(data=[(feature['properties']['@osmId'],
@@ -85,6 +92,16 @@ def print_ohsome_stats(project_id):
                                          columns=['osmId', 'validFrom', 'validTo'])], axis=0, ignore_index=True)
     df['validFrom'] = pd.to_datetime(df['validFrom'])
     df['validTo'] = pd.to_datetime(df['validTo'])
+    return df
+
+
+def print_ohsome_stats(project_id):
+    area, start_date, end_date = get_project_param(project_id)
+    data = download_project_ohsome_data(area, start_date, end_date)
+    print('Downloading building done.')
+
+    print('Process building data')
+    df = ohsome_to_df(data)
 
     print('Kept without modification :')
     kept = ((df['validFrom'] == start_date + ' 00:00:00') & (df['validTo'] == end_date + ' 00:00:00')).sum()
@@ -113,6 +130,45 @@ def print_ohsome_stats(project_id):
     print(round((data['result'][-1]['value'] - data['result'][0]['value']) / 1000))
 
 
+def get_building_data(project_id):
+    building_file = os.path.join(dm.get_data_dir(), 'buildings', f'{project_id}.csv')
+    if os.path.exists(building_file):
+        # Data already computed
+        return pd.read_csv(building_file)
+
+    ohsome_file = os.path.join(dm.get_data_dir(), 'ohsome', f'{project_id}_buildings.json')
+    if os.path.exists(ohsome_file):
+        # Read local ohsome data
+        with open(ohsome_file, 'r') as f:
+            data = json.load(f)
+    else:
+        # Download data from ohsome
+        data = download_project_ohsome_data(*get_project_param(project_id))
+        with open(ohsome_file, 'w') as f:
+            json.dump(data, f)
+
+    # Format ohsome data in dataframe
+    df = ohsome_to_df(data)
+
+    # Count the building number by date at 00:00:00
+    count_df = pd.DataFrame()
+    for date in pd.date_range(pd.Timestamp(df['validFrom'].min().date()), df['validTo'].max()):
+        building_nb = ((df['validFrom'] <= date) & (df['validTo'] >= date)).sum()
+        count_df = pd.concat([count_df, pd.DataFrame(data=[(date, building_nb)], columns=['Date', 'BuildingNb'])],
+                             axis=0, ignore_index=True)
+    count_df.to_csv(building_file, index=None)
+    return count_df
+
+
 if __name__ == '__main__':
     args = get_args()
-    print_ohsome_stats(args.project_id)
+    if args.project_list is None:
+        print_ohsome_stats(args.project_id)
+    else:
+        with open(args.project_list, 'r') as f:
+            projects = f.readlines()
+        for line in projects:
+            project_id = int(line.replace('\n', ''))
+            print('=====================')
+            print(f'PROJECT {project_id} :')
+            get_building_data(project_id)
