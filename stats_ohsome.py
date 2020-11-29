@@ -20,6 +20,14 @@ def get_args():
     return parser.parse_args()
 
 
+class NoDataException(Exception):
+    pass
+
+
+class URLTooLongException(Exception):
+    pass
+
+
 def get_json_request_header():
     """
     Return the header for JSON request
@@ -56,6 +64,8 @@ def download_ohsome_data(area, start_time, end_time, tag, tag_type=None):
         url += '&types=' + tag_type
     print(f'Extract {tag} data between {start_time} and {end_time}')
     r = requests.get(url, headers=get_json_request_header())
+    if r.status_code == 414:
+        raise URLTooLongException()
     return r.json()
 
 
@@ -85,6 +95,8 @@ def get_project_param(project_id):
 
 def ohsome_to_df(data):
     df = pd.DataFrame()
+    if len(data['features']) == 0:
+        raise NoDataException()
     for feature in tqdm(data['features']):
         df = pd.concat([df, pd.DataFrame(data=[(feature['properties']['@osmId'],
                                                 feature['properties']['@validFrom'],
@@ -171,4 +183,9 @@ if __name__ == '__main__':
             project_id = int(line.replace('\n', ''))
             print('=====================')
             print(f'PROJECT {project_id} :')
-            get_building_data(project_id)
+            try:
+                get_building_data(project_id)
+            except NoDataException as e:
+                print(f'No buildings found for {project_id}')
+            except URLTooLongException:
+                print(f'Perimeter too complex for {project_id}')
