@@ -183,7 +183,9 @@ class Database:
         return self.project_data['tasks']['features']
 
     def get_project_name(self):
-        return self.project_data['name']
+        if 'name' in self.project_data:
+            return self.project_data['name']
+        return self.project_data['projectInfo']['name']
 
     def get_project_center_coordinates(self):
         return self.project_data['aoiCentroid']['coordinates']
