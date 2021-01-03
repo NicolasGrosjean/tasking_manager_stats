@@ -20,7 +20,7 @@ Example of this image generation:
 
 #### Linux/Mac
 
-Coming soon
+Will be done if asked
 
 ### Contributor Installation
 
@@ -141,7 +141,7 @@ python tasking_manager_stats/agregate_user_stats.py <merged_stats> <stats_one_au
 
 Example to get latest data :
 ```
-python tasking_manager_stats/get_user_stats.py ../data/merged_stats.csv ../data/merged_stats_one_atuhor_by_task_type.csv ../data/mapathons.csv
+python tasking_manager_stats/get_user_stats.py ../data/merged_stats.csv ../data/merged_stats_one_author_by_task_type.csv ../data/mapathons.csv
 ```
 
 Example to create a dataset to predict contributors who come back in 2020 :
