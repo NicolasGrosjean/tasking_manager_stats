@@ -24,14 +24,17 @@ if __name__ == '__main__':
     with open(args.input_file, 'r') as f:
         projects = f.readlines()
     for line in projects:
-        project_id = int(line.replace('\n', ''))
-        print('=====================')
-        print(f'PROJECT {project_id} :')
-        db = dm.Database(project_id)
-        if db.updated:
-            export_tasks_to_csv(project_id)
-            print_project_stats(project_id)
-            print_ohsome_stats(project_id)
-            time.sleep(30 + 30 * random.random())
-        else:
-            print('already up to date')
+        try:
+            project_id = int(line.replace('\n', ''))
+            print('=====================')
+            print(f'PROJECT {project_id} :')
+            db = dm.Database(project_id)
+            if db.updated:
+                export_tasks_to_csv(project_id)
+                print_project_stats(project_id)
+                print_ohsome_stats(project_id)
+                time.sleep(30 + 30 * random.random())
+            else:
+                print('already up to date')
+        except:
+            pass
