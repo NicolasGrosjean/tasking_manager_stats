@@ -1,4 +1,5 @@
 import argparse
+import logging
 import os
 import random
 import sys
@@ -20,21 +21,23 @@ def get_args():
 
 
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
     args = get_args()
     with open(args.input_file, 'r') as f:
         projects = f.readlines()
+    force_computation = False
     for line in projects:
         try:
             project_id = int(line.replace('\n', ''))
             print('=====================')
             print(f'PROJECT {project_id} :')
             db = dm.Database(project_id)
-            if db.updated:
+            if db.updated or force_computation:
                 export_tasks_to_csv(project_id)
                 print_project_stats(project_id)
                 print_ohsome_stats(project_id)
                 time.sleep(30 + 30 * random.random())
             else:
                 print('already up to date')
-        except:
-            pass
+        except Exception as e:
+            logging.exception(e)

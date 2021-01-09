@@ -4,6 +4,7 @@ import json
 import pandas as pd
 import requests
 from tqdm import tqdm
+import logging
 
 import os
 import sys
@@ -62,33 +63,31 @@ def download_ohsome_data(area, start_time, end_time, tag, tag_type=None):
           '&keys=' + tag + '&properties=tags&showMetadata=false&time=' + start_time + ',' + end_time
     if tag_type is not None:
         url += '&types=' + tag_type
-    print(f'Extract {tag} data between {start_time} and {end_time}')
+    logging.info(f'Extract {tag} data between {start_time} and {end_time}')
     r = requests.get(url, headers=get_json_request_header())
     if r.status_code == 414:
         raise URLTooLongException()
+    elif r.status_code != 200:
+        logging.error(json.loads(r._content.decode())['message'])
+        r.raise_for_status()
     return r.json()
 
 
 def download_project_ohsome_data(area, start_date, end_date):
     ohsome_max_date = get_last_available_ohsome_date()
     if datetime.datetime.strptime(ohsome_max_date, '%Y-%m-%d') < datetime.datetime.strptime(end_date, '%Y-%m-%d'):
-        print(f'ohsome data end {ohsome_max_date} whereas the latest project update was {end_date}')
+        logging.info(f'ohsome data end {ohsome_max_date} whereas the latest project update was {end_date}')
         return
     return download_ohsome_data(area, start_date, end_date, 'building', tag_type=None)
 
 
 def get_project_param(project_id):
     db = dm.Database(project_id)
-    polygons = ''
-    for polygon in db.get_perimeter_poly()['coordinates']:
-        if polygons != '':
-            polygons += '|'
-        polygons += str(polygon).replace('[', '').replace(']', '').replace(' ', '')
-    area = 'bpolys=' + polygons
+    area = 'bboxes=' + str(db.get_perimeter_bounding_box()).replace('[', '').replace(']', '').replace(' ', '')
     start_date = db.get_creation_date()
     end_date = db.compute_final_validation_date()
     if end_date == '1970-01-01':
-        print('WARNING : No validation found !')
+        logging.warning('No validation found !')
         end_date = db.get_latest_update_date()
     return area, start_date, end_date
 
@@ -173,6 +172,7 @@ def get_building_data(project_id):
 
 
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
     args = get_args()
     if args.project_list is None:
         print_ohsome_stats(args.project_id)

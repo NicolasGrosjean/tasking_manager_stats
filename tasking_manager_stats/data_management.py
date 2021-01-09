@@ -168,7 +168,11 @@ class Database:
         return self.project_data['priorityAreas']
 
     def get_perimeter_poly(self):
+        # TODO: Simplify the returned point list
         return self.project_data['areaOfInterest']
+
+    def get_perimeter_bounding_box(self):
+        return self.project_data['aoiBBOX']
 
     def get_start_date(self):
         return pd.to_datetime(self.project_data['created']).date()
