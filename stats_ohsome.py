@@ -145,6 +145,7 @@ def get_building_data(project_id):
     building_file = os.path.join(dm.get_data_dir(), 'buildings', f'{project_id}.csv')
     if os.path.exists(building_file):
         # Data already computed
+        logging.info('Data already computed')
         return pd.read_csv(building_file)
 
     ohsome_file = os.path.join(dm.get_data_dir(), 'ohsome', f'{project_id}_buildings.json')

@@ -206,6 +206,23 @@ Example:
 python stats_ohsome.py 5654
 ```
 
+### Compute daily building stats with ohsome
+
+Create CSV file in *data/buildings* for each project containing the daily building number.  
+```
+python stats_ohsome.py <useles_project_id> -project_list <input_file>
+```
+
+*input_file* contains the list of project ids with one id by line.
+
+### Merge daily building files into one
+
+Merge all the CSV files from *data/buildings* into one and add building number from project starting.
+
+```
+python merge_building_stats.py
+```
+
 ### Compute stats to update
 Print some stats about updated HOT tasking manager projects.
 ```
