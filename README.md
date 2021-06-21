@@ -89,6 +89,21 @@ Run the following command to know the parameters.
 python tasking_manager_stats/generate_map_evolution.py -h
 ````
 
+
+## Mapathon maptevolution
+
+Run the following command
+
+````
+python tasking_manager_stats/generate_map_evolution_mapathon.py <project_id> <date>
+````
+
+Example
+
+````
+python tasking_manager_stats/generate_map_evolution_mapathon.py 9975 2020-12-7
+````
+
 ## Statistics
 
 ### Export task data of a project
