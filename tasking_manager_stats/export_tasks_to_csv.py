@@ -11,6 +11,8 @@ import tasking_manager_stats.data_management as dm
 def get_args():
     parser = argparse.ArgumentParser(description='Generate a CSV file with task data')
     parser.add_argument('project_id', type=int, help='Id of the HOT tasking manager project')
+    parser.add_argument('-project_list', type=str,
+                        help='File containing a list of project id to apply script onb all of them')
     return parser.parse_args()
 
 
@@ -65,4 +67,13 @@ def export_tasks_to_csv(project_id):
 
 if __name__ == '__main__':
     args = get_args()
-    export_tasks_to_csv(args.project_id)
+    if args.project_list is None:
+        export_tasks_to_csv(args.project_id)
+    else:
+        with open(args.project_list, 'r') as f:
+            projects = f.readlines()
+        for project in projects:
+            project_id = project.replace('\n', '')
+            print('=====================')
+            print(f'PROJECT {project_id} :')
+            export_tasks_to_csv(project_id)

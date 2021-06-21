@@ -90,12 +90,12 @@ python tasking_manager_stats/generate_map_evolution.py -h
 ````
 
 
-## Mapathon maptevolution
+## Mapathon map evolution
 
 Run the following command
 
 ````
-python tasking_manager_stats/generate_map_evolution_mapathon.py <project_id> <date>
+python tasking_manager_stats/generate_map_evolution_mapathon.py <project_id> <YYYY_MM_DD>
 ````
 
 Example
@@ -116,6 +116,15 @@ Example:
 ```
 python tasking_manager_stats/export_tasks_to_csv.py 5654
 ```
+
+### Export task data of a list of projects
+
+Export task data in a CSV file (in data/stats/) for a HOT tasking manager project.
+```
+python tasking_manager_stats/export_tasks_to_csv.py <useless_project_id> -project_list <input_file>
+```
+
+*input_file* contains the list of project ids with one id by line.
 
 ### Merge all data
 Merge all the task data located in data/stats/ directory.
