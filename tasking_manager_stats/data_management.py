@@ -145,6 +145,10 @@ def need_to_download_data(data_file_path, project_id):
     return False
 
 
+class AoiBBOXMissingException(Exception):
+    pass
+
+
 class Database:
     """
     The Database class manage the loading of the data and if necessary the downloading and the storage
@@ -172,7 +176,9 @@ class Database:
         return self.project_data['areaOfInterest']
 
     def get_perimeter_bounding_box(self):
-        return self.project_data['aoiBBOX']
+        if 'aoiBBOX' in self.project_data:
+            return self.project_data['aoiBBOX']
+        raise AoiBBOXMissingException()
 
     def get_start_date(self):
         return pd.to_datetime(self.project_data['created']).date()

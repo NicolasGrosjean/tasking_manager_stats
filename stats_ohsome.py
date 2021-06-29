@@ -187,6 +187,8 @@ if __name__ == '__main__':
             try:
                 get_building_data(project_id)
             except NoDataException as e:
-                print(f'No buildings found for {project_id}')
+                logging.error(f'No buildings found for {project_id}')
             except URLTooLongException:
-                print(f'Perimeter too complex for {project_id}')
+                logging.error(f'Perimeter too complex for {project_id}')
+            except dm.AoiBBOXMissingException:
+                logging.error(f'No perimeter for {project_id}')
