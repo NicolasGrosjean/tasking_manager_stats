@@ -78,6 +78,8 @@ def download_project_ohsome_data(area, start_date, end_date):
     if datetime.datetime.strptime(ohsome_max_date, '%Y-%m-%d') < datetime.datetime.strptime(end_date, '%Y-%m-%d'):
         logging.info(f'ohsome data end {ohsome_max_date} whereas the latest project update was {end_date}')
         return
+    if start_date == end_date:
+        end_date = (datetime.datetime.strptime(end_date, '%Y-%m-%d') + datetime.timedelta(days=1)).strftime('%Y-%m-%d')
     return download_ohsome_data(area, start_date, end_date, 'building', tag_type=None)
 
 
