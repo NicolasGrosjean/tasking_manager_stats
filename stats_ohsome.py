@@ -29,6 +29,10 @@ class URLTooLongException(Exception):
     pass
 
 
+class OhsomeDataTooOldException(Exception):
+    pass
+
+
 def get_json_request_header():
     """
     Return the header for JSON request
@@ -76,8 +80,7 @@ def download_ohsome_data(area, start_time, end_time, tag, tag_type=None):
 def download_project_ohsome_data(area, start_date, end_date):
     ohsome_max_date = get_last_available_ohsome_date()
     if datetime.datetime.strptime(ohsome_max_date, '%Y-%m-%d') < datetime.datetime.strptime(end_date, '%Y-%m-%d'):
-        logging.info(f'ohsome data end {ohsome_max_date} whereas the latest project update was {end_date}')
-        return
+        raise OhsomeDataTooOldException(f'ohsome data end {ohsome_max_date} whereas the latest project update was {end_date}')
     if start_date == end_date:
         end_date = (datetime.datetime.strptime(end_date, '%Y-%m-%d') + datetime.timedelta(days=1)).strftime('%Y-%m-%d')
     return download_ohsome_data(area, start_date, end_date, 'building', tag_type=None)
@@ -184,8 +187,8 @@ if __name__ == '__main__':
             projects = f.readlines()
         for line in projects:
             project_id = int(line.replace('\n', ''))
-            print('=====================')
-            print(f'PROJECT {project_id} :')
+            logging.info('=====================')
+            logging.info(f'PROJECT {project_id} :')
             try:
                 get_building_data(project_id)
             except NoDataException as e:
@@ -194,3 +197,5 @@ if __name__ == '__main__':
                 logging.error(f'Perimeter too complex for {project_id}')
             except dm.AoiBBOXMissingException:
                 logging.error(f'No perimeter for {project_id}')
+            except OhsomeDataTooOldException as e:
+                logging.exception(e)
