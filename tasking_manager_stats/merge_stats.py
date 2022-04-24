@@ -12,15 +12,20 @@ if __name__ == '__main__':
     for file in tqdm(os.listdir(stats_dir)):
         if file.endswith('.csv'):
             df = pd.read_csv(os.path.join(stats_dir, file), encoding='ISO-8859-1')
+
+            # Manage the author stats by giving a (task, type) to only one author
             df2 = df.loc[df.groupby(['Type', 'Task']).idxmax()['Duration']]
             del df2['Duration']
             df2 = df2[~pd.isnull(df2['Author'])]
             stat_tasks = pd.concat([stat_tasks, df2.groupby(['Author', 'Type']).count()['Task'].reset_index()], axis=0,
                                    ignore_index=True)
             stat_tasks2 = pd.concat([stat_tasks2, df2])
-            df = df[['Project', 'Year', 'Month', 'Day', 'Rel. Day', 'Hour', 'Minute', 'Second', 'Duration', 'Author',
-                     'Type']].drop_duplicates()
-            stats = pd.concat([stats, df], axis=0)
+
+            # Manage the duration stats by grouping the tasks
+            # Like we can validate several tasks once and the duration can vary to 1 seconds, we group without duration
+            columns = ['Project', 'Year', 'Month', 'Day', 'Rel. Day', 'Hour', 'Minute', 'Second', 'Author', 'Type']
+            df3 = df.groupby(columns).max()['Duration'].reset_index()
+            stats = pd.concat([stats, df3], axis=0)
     stats['Duration'] = stats['Duration'].fillna(0)
     stats.loc[stats['Duration'] > 7200, 'Duration'] = 7200
     stats['Duration'] = stats['Duration'].astype(int)
