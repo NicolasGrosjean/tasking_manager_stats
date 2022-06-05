@@ -14,7 +14,7 @@ if __name__ == '__main__':
             df = pd.read_csv(os.path.join(stats_dir, file), encoding='ISO-8859-1')
 
             # Manage the author stats by giving a (task, type) to only one author
-            df2 = df.loc[df.groupby(['Type', 'Task']).idxmax()['Duration']]
+            df2 = df.loc[df.groupby(['Type', 'Task']).idxmax()['Duration'].dropna()]
             del df2['Duration']
             df2 = df2[~pd.isnull(df2['Author'])]
             stat_tasks = pd.concat([stat_tasks, df2.groupby(['Author', 'Type']).count()['Task'].reset_index()], axis=0,
