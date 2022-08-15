@@ -137,6 +137,8 @@ def need_to_download_data(data_file_path, project_id):
     summary_data = download_summary_data(project_id)
     latest_update = pd.to_datetime(summary_data['lastUpdated'])
     latest_downloaded_update = pd.to_datetime(project_data['lastUpdated'])
+    if latest_downloaded_update.tz is None:
+        latest_downloaded_update = latest_downloaded_update.tz_localize("utc")
     if latest_update > latest_downloaded_update:
         print(f'The project has been updated ({latest_update}) since the latest change downloaded ({latest_downloaded_update}), '
               f'it will be downloaded again from the HOT Tasking Manager.')

@@ -24,13 +24,21 @@ Will be done if asked
 
 ### Contributor Installation
 
-If you want contribute to the project or 
+If you want contribute to the project, install one of the following environment.
+
+#### Fixed environment
+
+````
+pip install -r requirements.txt
+````
+
+#### Conda environment
 
 [Install conda](https://docs.conda.io/en/latest/miniconda.html)
 
 Create a conda environment
 ````
-conda create -n tasking_manager_stats python=3.6
+conda create -n tasking_manager_stats python=3.10
 ````
 
 Activate the conda environment
@@ -40,7 +48,7 @@ activate tasking_manager_stats
 
 Install the packages with the following command
 ````
-conda install pillow tqdm pandas matplotlib numpy requests
+conda install pillow tqdm pandas matplotlib numpy requests plotly
 ````
 
 #### Optionnal
